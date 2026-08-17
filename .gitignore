@@ -1,0 +1,24 @@
+# Build output
+gggitmanager
+
+# Compilation database
+compile_commands.json
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Object files
+*.o
+*.obj
+
+# Debugging / profiling
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+
+# Temporary files
+*~
+*.swp
+*.swo
