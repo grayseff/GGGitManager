@@ -276,7 +276,7 @@ on_commit_confirmed(
             view->selected_repository->path,
             message
         );
-    if (result = 0){
+    if (result == 0){
         GtkWidget *dialog = g_object_get_data(
                     G_OBJECT(button),
                     "dialog"
