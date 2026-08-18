@@ -1,0 +1,28 @@
+.repository-status {
+    font-weight: 500;
+}
+
+.status-clean {
+    color: #8ec07c;
+}
+
+.status-staged {
+    color: #fabd2f;
+}
+
+.status-modified {
+    color: #fe8019;
+}
+
+.status-untracked {
+    color: #fb4934;
+}
+.repository-icon {
+    margin-right: 8px;
+}
+row:selected {
+    background-color: alpha(@accent_bg_color, 0.15);
+}
+row:selected label {
+    font-weight: 600;
+}

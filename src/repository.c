@@ -100,6 +100,10 @@ scan_directory(RepositoryList *list, const char *path)
         if (strcmp(entry->d_name, ".") == 0 ||
             strcmp(entry->d_name, "..") == 0)
             continue;
+
+    /* Ignore hidden directories */
+        if (entry->d_name[0] == '.')
+            continue;
         size_t path_length = strlen(path);
         size_t name_length = strlen(entry->d_name);
 

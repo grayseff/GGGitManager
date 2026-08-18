@@ -76,7 +76,7 @@ if (!status.staged &&
 
 return status;
    }
-
+//--------------------------------------------------------------------------------------------------------//
 int
 git_add(const char *path)
 {
@@ -91,6 +91,7 @@ git_add(const char *path)
 
     return system(command) == 0 ? 0 : -1;
 }
+//--------------------------------------------------------------------------------------------------------//
 int
 git_commit(const char *path, const char *message)
 {
@@ -106,6 +107,7 @@ git_commit(const char *path, const char *message)
 
     return system(command) == 0 ? 0 : -1;
 }
+//----------------------------------------------------------------------------------------------------//
 int
 git_pull(const char *path)
 {
@@ -120,7 +122,7 @@ git_pull(const char *path)
 
     return system(command) == 0 ? 0 : -1;
 }
-
+//---------------------------------------------------------------------------------------------//
 int
 git_push(const char *path)
 {

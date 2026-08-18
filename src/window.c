@@ -70,11 +70,7 @@ static void
         return;
     }
     view->selected_repository = repository;
-    printf(
-        "Selected repository: %s\n",
-        repository->name
-    );
-
+    
 }
 
 static void
@@ -266,7 +262,10 @@ create_repository_row(const char *name, GitStatus *status)
     gtk_widget_set_margin_end(row, 16);
 
     repo_icon = gtk_image_new_from_icon_name("folder-symbolic");
-
+    gtk_widget_add_css_class(
+        repo_icon,
+        "repository-icon"
+    );
     name_label = gtk_label_new(name);
     gtk_widget_set_hexpand(name_label, TRUE);
     gtk_label_set_xalign(GTK_LABEL(name_label), 0.0);
@@ -284,9 +283,21 @@ create_repository_row(const char *name, GitStatus *status)
         status_icon = gtk_image_new_from_icon_name("dialog-question-symbolic");
     
     status_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-
+    gtk_widget_set_size_request(
+        status_box,
+        120,
+        -1
+    );
+    gtk_widget_set_halign(
+        status_box,
+        GTK_ALIGN_START
+    );
     status_label = gtk_label_new(NULL);
 
+    gtk_widget_add_css_class(
+        status_label,
+        "repository-status"
+    );
     update_status_label(
         status_label,
         status
@@ -298,9 +309,11 @@ create_repository_row(const char *name, GitStatus *status)
         status_label
     );
 
-
-    gtk_label_set_xalign(GTK_LABEL(status_label), 0.0);
-        gtk_box_append(GTK_BOX(status_box), status_icon);
+    gtk_label_set_xalign(
+        GTK_LABEL(status_label),
+        0.0
+    );
+    gtk_box_append(GTK_BOX(status_box), status_icon);
     gtk_box_append(GTK_BOX(status_box), status_label);
 
     gtk_box_append(GTK_BOX(row), repo_icon);

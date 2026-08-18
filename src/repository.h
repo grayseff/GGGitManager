@@ -18,7 +18,7 @@ typedef struct {
 typedef struct {
     RepositoryList *repositories;
     Repository *selected_repository;
-    GtkWidget *repository_list
+    GtkWidget *repository_list;
 } RepositoryView;
 
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GGGitManager
+Comment=Manage Git repositories
+Exec=/home/grayseff/.local/bin/gggitmanager
+Icon=com.gray.gggitmanager
+Terminal=false
+Categories=Development
+StartupNotify=true

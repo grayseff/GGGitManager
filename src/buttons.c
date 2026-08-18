@@ -4,14 +4,78 @@
 #include "window.h"
 
 
+static void
+show_error_dialog(
+    const char *title,
+    const char *message
+)
+{
+    GtkWidget *dialog;
+    GtkWidget *box;
+    GtkWidget *label;
+    GtkWidget *button;
 
+    dialog = gtk_window_new();
+
+    gtk_window_set_title(
+        GTK_WINDOW(dialog),
+        title
+    );
+
+    gtk_window_set_default_size(
+        GTK_WINDOW(dialog),
+        400,
+        150
+    );
+
+    box = gtk_box_new(
+        GTK_ORIENTATION_VERTICAL,
+        12
+    );
+
+    gtk_widget_set_margin_top(box, 16);
+    gtk_widget_set_margin_bottom(box, 16);
+    gtk_widget_set_margin_start(box, 16);
+    gtk_widget_set_margin_end(box, 16);
+
+    label = gtk_label_new(message);
+
+    gtk_label_set_wrap(
+        GTK_LABEL(label),
+        TRUE
+    );
+
+    button = gtk_button_new_with_label("OK");
+
+    gtk_widget_set_halign(
+        button,
+        GTK_ALIGN_END
+    );
+
+    g_signal_connect_swapped(
+        button,
+        "clicked",
+        G_CALLBACK(gtk_window_destroy),
+        dialog
+    );
+
+    gtk_box_append(GTK_BOX(box), label);
+    gtk_box_append(GTK_BOX(box), button);
+
+    gtk_window_set_child(
+        GTK_WINDOW(dialog),
+        box
+    );
+
+    gtk_window_present(
+        GTK_WINDOW(dialog)
+    );
+}
 static void
 on_add_clicked(
     GtkButton *button,
     gpointer data)
 {
-    printf("ADD CLICKED\n");
-
     RepositoryView *view = data;
 
     if (view->selected_repository == NULL) {
@@ -29,8 +93,12 @@ on_add_clicked(
     );
     if (result ==0){
         refresh_repository_view(view);
+    } else {
+        show_error_dialog(
+                "Add Failed",
+                "Git could not stage the repository changes"
+                );
     }
-    printf("git_add result: %d\n", result);
 }
 static void
 on_commit_confirmed(
@@ -58,8 +126,12 @@ on_commit_confirmed(
                     "dialog"
                 );
         gtk_window_destroy(GTK_WINDOW(dialog));
+    } else {
+        show_error_dialog(
+            "Commit failed",
+            "Git could not commit the changes"
+            );
     }
-    printf("git_commit result: %d\n", result);
 }
 
 
@@ -206,8 +278,13 @@ on_pull_clicked(
 
     printf("git_pull result: %d\n", result);
 
-    if (result == 0)
+    if (result == 0){
         refresh_repository_view(view);
+    } else {
+        show_error_dialog("Pull Failed",
+                "Git could not pull the repository"
+                );
+    }
 }
 
 static void
@@ -233,8 +310,14 @@ on_push_clicked(
 
     printf("git_push result: %d\n", result);
 
-    if (result == 0)
+    if (result == 0) {
         refresh_repository_view(view);
+    } else {
+        show_error_dialog(
+                "Push Failed",
+                "Git could not push the repository"
+                );
+    }
 }
 
 GtkWidget *
