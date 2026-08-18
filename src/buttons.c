@@ -245,8 +245,26 @@ create_action_bar(RepositoryView *view)
     GtkWidget *commit_button;
     GtkWidget *pull_button;
     GtkWidget *push_button;
+    GtkWidget *action_frame;
+    GtkWidget *separator;
+    action_frame = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    separator = gtk_separator_new(
+            GTK_ORIENTATION_HORIZONTAL
+            );
+    action_box = gtk_box_new(
+            GTK_ORIENTATION_HORIZONTAL,
+            6
+            );
 
-    action_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+    gtk_widget_set_margin_top(action_box, 12);
+    gtk_widget_set_margin_bottom(action_box, 12);
+    gtk_widget_set_margin_start(action_box, 16);
+    gtk_widget_set_margin_end(action_box, 16);
+
+    gtk_widget_set_halign(
+        action_box,
+        GTK_ALIGN_END
+    );
 
     add_button = gtk_button_new_with_label("Add");
     g_signal_connect(
@@ -256,35 +274,43 @@ create_action_bar(RepositoryView *view)
         view
     );
     commit_button = gtk_button_new_with_label("Commit");
-g_signal_connect(
-    commit_button,
-    "clicked",
-    G_CALLBACK(on_commit_clicked),
-    view
-);
+    g_signal_connect(
+        commit_button,
+        "clicked",
+        G_CALLBACK(on_commit_clicked),
+        view
+    );
     pull_button = gtk_button_new_with_label("Pull");
     push_button = gtk_button_new_with_label("Push");
 
-g_signal_connect(
-    pull_button,
-    "clicked",
-    G_CALLBACK(on_pull_clicked),
-    view
-);
+    g_signal_connect(
+        pull_button,
+        "clicked",
+        G_CALLBACK(on_pull_clicked),
+        view
+    );
 
-g_signal_connect(
-    push_button,
-    "clicked",
-    G_CALLBACK(on_push_clicked),
-    view
-);
+    g_signal_connect(
+        push_button,
+        "clicked",
+        G_CALLBACK(on_push_clicked),
+        view
+    );
+    gtk_box_append(
+        GTK_BOX(action_frame),
+        separator
+    );
 
+    gtk_box_append(
+        GTK_BOX(action_frame),
+        action_box
+    );
     gtk_box_append(GTK_BOX(action_box), add_button);
     gtk_box_append(GTK_BOX(action_box), commit_button);
     gtk_box_append(GTK_BOX(action_box), pull_button);
     gtk_box_append(GTK_BOX(action_box), push_button);
 
-    return action_box;
+    return action_frame;
 }
 
 

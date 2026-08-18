@@ -2,7 +2,6 @@
 #include "window.h"
 #include "repository.h"
 #include "buttons.h"
-
 #include "git.h"
 
 static GtkWidget *create_repository_view(RepositoryList
@@ -77,6 +76,56 @@ static void
     );
 
 }
+
+static void
+update_status_label(GtkWidget *status_label, GitStatus *status)
+{
+    const char *status_text;
+
+    gtk_widget_remove_css_class(status_label, "status-clean");
+    gtk_widget_remove_css_class(status_label, "status-staged");
+    gtk_widget_remove_css_class(status_label, "status-modified");
+    gtk_widget_remove_css_class(status_label, "status-untracked");
+
+    if (status->clean) {
+        status_text = "Clean";
+        gtk_widget_add_css_class(
+            status_label,
+            "status-clean"
+        );
+    }
+    else if (status->staged) {
+        status_text = "Staged";
+        gtk_widget_add_css_class(
+            status_label,
+            "status-staged"
+        );
+    }
+    else if (status->modified) {
+        status_text = "Modified";
+        gtk_widget_add_css_class(
+            status_label,
+            "status-modified"
+        );
+    }
+    else if (status->untracked) {
+        status_text = "Untracked";
+        gtk_widget_add_css_class(
+            status_label,
+            "status-untracked"
+        );
+    }
+    else {
+        status_text = "Unknown";
+    }
+
+    gtk_label_set_text(
+        GTK_LABEL(status_label),
+        status_text
+    );
+}
+
+
 void
 refresh_repository_view(RepositoryView *view)
 {
@@ -107,23 +156,12 @@ refresh_repository_view(RepositoryView *view)
             continue;
 
         GitStatus status = git_get_status(repository->path);
-
-        const char *status_text;
-
-        if (status.untracked)
-            status_text = "Untracked";
-        else if (status.staged)
-            status_text = "Staged";
-        else if (status.modified)
-            status_text = "Modified";
-        else
-            status_text = "Clean";
-
-        gtk_label_set_text(
-            GTK_LABEL(status_label),
-            status_text
-        );
+        update_status_label(
+        status_label,
+        &status
+    );
     }
+
 
 }
 static GtkWidget *
@@ -233,19 +271,7 @@ create_repository_row(const char *name, GitStatus *status)
     gtk_widget_set_hexpand(name_label, TRUE);
     gtk_label_set_xalign(GTK_LABEL(name_label), 0.0);
 
-    const char *status_text;
-
-    if (status->clean)
-        status_text = "Clean";
-    else if (status->staged)
-        status_text = "Staged";
-    else if (status->modified)
-        status_text = "Modified";
-    else if (status->untracked)
-        status_text = "Untracked";
-    else
-        status_text = "Unknown";
-
+    
     if (status->clean)
         status_icon = gtk_image_new_from_icon_name("emblem-ok-symbolic");
     else if (status->staged)
@@ -259,8 +285,12 @@ create_repository_row(const char *name, GitStatus *status)
     
     status_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 
+    status_label = gtk_label_new(NULL);
 
-    status_label = gtk_label_new(status_text);
+    update_status_label(
+        status_label,
+        status
+    );
 
     g_object_set_data(
         G_OBJECT(row),
