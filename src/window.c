@@ -199,10 +199,10 @@ create_repository_view(RepositoryList *repositories)
             &status
         );
                 g_object_set_data(
-            G_OBJECT(repository_row),
-            "repository",
-            repository
-        );
+                    G_OBJECT(repository_row),
+                    "repository",
+                    repository
+                );
         gtk_list_box_append(GTK_LIST_BOX(view->repository_list), repository_row);
         }
     action_bar = create_action_bar(view);
@@ -268,6 +268,14 @@ create_repository_row(const char *name, GitStatus *status)
 
 
     status_label = gtk_label_new(status_text);
+
+    g_object_set_data(
+        G_OBJECT(row),
+        "status-label",
+        status_label
+    );
+
+
     gtk_label_set_xalign(GTK_LABEL(status_label), 0.0);
         gtk_box_append(GTK_BOX(status_box), status_icon);
     gtk_box_append(GTK_BOX(status_box), status_label);
