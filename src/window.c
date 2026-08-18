@@ -6,6 +6,7 @@
 typedef struct {
     RepositoryList *repositories;
     Repository *selected_repository;
+    GtkWidget *repository_list
 } RepositoryView;
 
 
@@ -83,7 +84,55 @@ static void
     );
 
 }
+static void
+refresh_repository_view(RepositoryView *view)
+{
+    for (guint i = 0; ; i++) {
+        GtkListBoxRow *list_row;
 
+        list_row = gtk_list_box_get_row_at_index(
+            GTK_LIST_BOX(view->repository_list),
+            i
+        );
+
+        if (list_row == NULL)
+            break;
+
+        GtkWidget *row = gtk_list_box_row_get_child(list_row);
+
+        Repository *repository = g_object_get_data(
+            G_OBJECT(row),
+            "repository"
+        );
+
+        GtkWidget *status_label = g_object_get_data(
+            G_OBJECT(row),
+            "status-label"
+        );
+
+        if (repository == NULL || status_label == NULL)
+            continue;
+
+        GitStatus status = git_get_status(repository->path);
+
+        const char *status_text;
+
+        if (status.untracked)
+            status_text = "Untracked";
+        else if (status.staged)
+            status_text = "Staged";
+        else if (status.modified)
+            status_text = "Modified";
+        else
+            status_text = "Clean";
+
+        gtk_label_set_text(
+            GTK_LABEL(status_label),
+            status_text
+        );
+    }
+
+}
 static GtkWidget *
 create_repository_view(RepositoryList *repositories)
 {
@@ -92,7 +141,6 @@ create_repository_view(RepositoryList *repositories)
     GtkWidget *repository_label;
     GtkWidget *status_label;
     GtkWidget *separator;
-    GtkWidget *repository_list;
     GtkWidget *action_bar;
     RepositoryView *view;
 
@@ -100,7 +148,6 @@ create_repository_view(RepositoryList *repositories)
 
     view->repositories = repositories;
     view->selected_repository = NULL;
-
 
     content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     list_header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -127,15 +174,15 @@ create_repository_view(RepositoryList *repositories)
     gtk_box_append(GTK_BOX(content_box), list_header);
     gtk_box_append(GTK_BOX(content_box), separator);
     
-    repository_list = gtk_list_box_new();
-    gtk_widget_set_vexpand(repository_list,TRUE);
+    view->repository_list = gtk_list_box_new();
+    gtk_widget_set_vexpand(view->repository_list,TRUE);
 
     gtk_box_append(
             GTK_BOX(content_box),
-            repository_list);
+            view->repository_list);
 
     g_signal_connect(
-        repository_list,
+        view->repository_list,
         "row-selected",
         G_CALLBACK(on_repository_selected),
         view
@@ -156,7 +203,7 @@ create_repository_view(RepositoryList *repositories)
             "repository",
             repository
         );
-        gtk_list_box_append(GTK_LIST_BOX(repository_list), repository_row);
+        gtk_list_box_append(GTK_LIST_BOX(view->repository_list), repository_row);
         }
     action_bar = create_action_bar(view);
 
@@ -254,7 +301,9 @@ on_add_clicked(
     int result = git_add(
         view->selected_repository->path
     );
-
+    if (result ==0){
+        refresh_repository_view(view);
+    }
     printf("git_add result: %d\n", result);
 }
 static void
@@ -277,6 +326,7 @@ on_commit_confirmed(
             message
         );
     if (result == 0){
+        refresh_repository_view(view);
         GtkWidget *dialog = g_object_get_data(
                     G_OBJECT(button),
                     "dialog"
