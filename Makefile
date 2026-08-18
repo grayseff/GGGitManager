@@ -32,3 +32,8 @@ install: gggitmanager
 	    $(PREFIX)/share/applications/com.gray.gggitmanager.desktop
 	cp data/com.gray.gggitmanager.svg \
 	    $(PREFIX)/share/icons/hicolor/scalable/apps/com.gray.gggitmanager.svg
+
+uninstall:
+	rm -f $(PREFIX)/bin/gggitmanager
+	rm -f $(PREFIX)/share/applications/com.gray.gggitmanager.desktop
+	rm -f $(PREFIX)/share/icons/hicolor/scalable/apps/com.gray.gggitmanager.svg
