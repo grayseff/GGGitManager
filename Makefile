@@ -6,6 +6,7 @@ LIBS = $(shell pkg-config --libs gtk4)
 SRC = src/main.c \
 	  src/window.c \
 	  src/git.c \
+	  src/buttons.c \
 	  src/repository.c
 		
 

@@ -1,5 +1,7 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
+#include <gtk/gtk.h> 
+
 #include <stddef.h>
 typedef struct {
     char *path;
@@ -11,6 +13,17 @@ typedef struct {
     size_t count;
     size_t capacity;
 } RepositoryList;
+
+
+typedef struct {
+    RepositoryList *repositories;
+    Repository *selected_repository;
+    GtkWidget *repository_list
+} RepositoryView;
+
+
+
+
 
 void repository_list_init(RepositoryList *list);
 void repository_list_free(RepositoryList *list);

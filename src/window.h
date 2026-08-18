@@ -4,8 +4,7 @@
 #include <gtk/gtk.h>
 #include "repository.h"
 
-
 void create_window(GtkApplication *app, RepositoryList *repositories);
-
+void refresh_repository_view(RepositoryView *view);
 
 #endif
