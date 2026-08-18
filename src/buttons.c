@@ -183,6 +183,59 @@ on_commit_clicked(
     }
 
 
+static void
+on_pull_clicked(
+    GtkButton *button,
+    gpointer data)
+{
+    RepositoryView *view = data;
+
+    if (view->selected_repository == NULL) {
+        printf("No repository selected\n");
+        return;
+    }
+
+    printf(
+        "Pulling: %s\n",
+        view->selected_repository->name
+    );
+
+    int result = git_pull(
+        view->selected_repository->path
+    );
+
+    printf("git_pull result: %d\n", result);
+
+    if (result == 0)
+        refresh_repository_view(view);
+}
+
+static void
+on_push_clicked(
+    GtkButton *button,
+    gpointer data)
+{
+    RepositoryView *view = data;
+
+    if (view->selected_repository == NULL) {
+        printf("No repository selected\n");
+        return;
+    }
+
+    printf(
+        "Pushing: %s\n",
+        view->selected_repository->name
+    );
+
+    int result = git_push(
+        view->selected_repository->path
+    );
+
+    printf("git_push result: %d\n", result);
+
+    if (result == 0)
+        refresh_repository_view(view);
+}
 
 GtkWidget *
 create_action_bar(RepositoryView *view)
@@ -212,6 +265,20 @@ g_signal_connect(
     pull_button = gtk_button_new_with_label("Pull");
     push_button = gtk_button_new_with_label("Push");
 
+g_signal_connect(
+    pull_button,
+    "clicked",
+    G_CALLBACK(on_pull_clicked),
+    view
+);
+
+g_signal_connect(
+    push_button,
+    "clicked",
+    G_CALLBACK(on_push_clicked),
+    view
+);
+
     gtk_box_append(GTK_BOX(action_box), add_button);
     gtk_box_append(GTK_BOX(action_box), commit_button);
     gtk_box_append(GTK_BOX(action_box), pull_button);
@@ -219,3 +286,5 @@ g_signal_connect(
 
     return action_box;
 }
+
+

@@ -7,4 +7,6 @@
 
 GtkWidget *create_action_bar(RepositoryView *view);
 
+
+
 #endif
