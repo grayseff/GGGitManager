@@ -394,7 +394,11 @@ show_commit_dialog(RepositoryView *view)
 
     cancel_button = gtk_button_new_with_label("Cancel");
     commit_button = gtk_button_new_with_label("Commit");
-
+    g_object_set_data(
+        G_OBJECT(commit_button),
+        "message-entry",
+        message_entry
+    );
 
     g_object_set_data(
         G_OBJECT(commit_button),
